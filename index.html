@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suprématie Géopolitique – Ordre Mondial Ultime</title>
-    <!-- Intégration de Leaflet CSS pour la carte OpenStreetMap gratuite -->
+    <title>Suprématie Géopolitique – Simulateur Politique Ultime</title>
+    <!-- Leaflet CSS pour la carte OpenStreetMap -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
@@ -52,8 +52,8 @@
             display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
         }
         .header-title { font-weight: 900; color: var(--accent); font-size: 1.1rem; letter-spacing: 1px; }
-        .kpi-container { display: flex; gap: 10px; }
-        .kpi-card { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; display: flex; flex-direction: column; min-width: 85px; }
+        .kpi-container { display: flex; gap: 8px; }
+        .kpi-card { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; display: flex; flex-direction: column; min-width: 80px; }
         .kpi-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; }
         .kpi-value { font-size: 0.85rem; font-weight: bold; }
 
@@ -71,8 +71,8 @@
         input[type="range"] { width: 100%; margin-top: 3px; accent-color: var(--accent); cursor: pointer; }
 
         .action-btn { background: var(--success); margin-top: 5px; padding: 12px; font-size: 1rem; }
-        .market-btn { background: #334155; font-size: 0.75rem; padding: 6px; margin-top: 4px; }
-        .news-box { background: rgba(15, 23, 42, 0.7); border-left: 4px solid var(--warning); padding: 10px; border-radius: 4px; font-size: 0.8rem; }
+        .policy-btn { background: #334155; font-size: 0.75rem; padding: 7px; margin-top: 4px; text-align: left; border-left: 3px solid var(--accent); }
+        .news-box { background: rgba(15, 23, 42, 0.7); border-left: 4px solid var(--warning); padding: 12px; border-radius: 4px; font-size: 0.85rem; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -80,111 +80,105 @@
 <!-- ÉCRAN DE SETUP AVEC CARTE OPENSTREETMAP -->
 <div id="setup-overlay">
     <div class="setup-container">
-        <h1>SUPRÉMATIE GÉOPOLITIQUE : ORDRE MONDIAL</h1>
-        <p>Cliquez sur n'importe quel pays sur la carte OpenStreetMap pour en prendre le contrôle.</p>
+        <h1>SIMULATEUR DE POUVOIR POLITIQUE</h1>
+        <p>Sélectionnez votre nation sur la carte OpenStreetMap pour entamer votre mandat politique.</p>
         
         <div class="setup-grid">
             <div id="map-picker"></div>
             <div class="setup-right">
                 <div class="control-group">
-                    <label>Nation Sélectionnée</label>
+                    <label>Nation Cible</label>
                     <input type="text" id="selected-country-name" value="France" readonly style="font-weight:bold; color:var(--success);">
                 </div>
                 <div class="control-group">
-                    <label>Régime Politique</label>
+                    <label>Type de Régime Politique</label>
                     <select id="regime-type">
-                        <option value="democratie">République / Démocratie (Soumis aux Élections)</option>
-                        <option value="monarchie">Monarchie (Stabilité tradition)</option>
-                        <option value="dictature">Régime Autoritaire (Pouvoir absolu)</option>
+                        <option value="democratie">République Démocratique (Élections obligatoires)</option>
+                        <option value="monarchie">Monarchie Constitutionnelle (Soutien des élites)</option>
+                        <option value="dictature">Régime Fort / Présidentiel (Contrôle total)</option>
                     </select>
                 </div>
                 <div class="card" style="padding:10px;">
-                    <h3 style="margin-bottom:4px;">Statistiques Initiales Estimées</h3>
-                    <div class="stat-line"><span>PIB Estimé :</span> <strong id="setup-gdp">2,500 Mds €</strong></div>
-                    <div class="stat-line"><span>Trésorerie :</span> <strong id="setup-treasury">15 Mds €</strong></div>
+                    <h3 style="margin-bottom:4px;">Indicateurs Macro-économiques</h3>
+                    <div class="stat-line"><span>PIB National :</span> <strong id="setup-gdp">2,500 Mds €</strong></div>
+                    <div class="stat-line"><span>Trésorerie État :</span> <strong id="setup-treasury">15 Mds €</strong></div>
                 </div>
-                <button onclick="initGame()">PRENDRE LE POUVOIR DANS CETTE NATION</button>
+                <button onclick="initGame()">PRENDRE LES RÈNES DU PAYS</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- INTERFACE PRINCIPALE DU JEU -->
+<!-- INTERFACE PRINCIPALE DU JEU POLITIQUE -->
 <div id="game-container">
     <header>
         <div class="header-title" id="header-nation">NATION</div>
         <div class="kpi-container">
             <div class="kpi-card"><span class="kpi-label">Date</span><span class="kpi-value" id="kpi-date">Jan 2026</span></div>
             <div class="kpi-card"><span class="kpi-label">Trésorerie</span><span class="kpi-value" id="kpi-treasury" style="color: var(--success);">15.0 Mds</span></div>
-            <div class="kpi-card"><span class="kpi-label">PIB</span><span class="kpi-value" id="kpi-gdp">2500 Mds</span></div>
             <div class="kpi-card"><span class="kpi-label">Popularité</span><span class="kpi-value" id="kpi-pop">65 %</span></div>
-            <div class="kpi-card"><span class="kpi-label">Stabilité</span><span class="kpi-value" id="kpi-stability">80 %</span></div>
-            <div class="kpi-card" id="mandate-box"><span class="kpi-label">Mandat / Élection</span><span class="kpi-value" id="kpi-mandate">Ans: 5</span></div>
+            <div class="kpi-card"><span class="kpi-label">Autorité</span><span class="kpi-value" id="kpi-auth">70 %</span></div>
+            <div class="kpi-card" id="mandate-box"><span class="kpi-label">Prochaine Élection</span><span class="kpi-value" id="kpi-mandate">5a 0m</span></div>
         </div>
     </header>
 
     <sidebar>
-        <h2>Politique Fiscale</h2>
+        <h2>Ajustement Fiscal (%)</h2>
         <div class="slider-group">
-            <label><span>Impôt Sociétés</span><span id="val-tax">25</span>%</label>
-            <input type="range" id="tax-slider" min="5" max="50" value="25" oninput="updateSliders()">
+            <label><span>Impôt sur le Revenu/Sociétés</span><span id="val-tax">25</span>%</label>
+            <input type="range" id="tax-slider" min="5" max="55" value="25" oninput="updateSliders()">
         </div>
 
-        <h2>Budgets Mensuels (Mds €)</h2>
+        <h2>Budgets & Politiques Publiques</h2>
         <div class="slider-group">
-            <label><span>Éducation & R&D</span><span id="val-edu">6</span></label>
-            <input type="range" id="edu-slider" min="1" max="30" value="6" oninput="updateSliders()">
+            <label><span>Services Publics & Social</span><span id="val-social">12</span> Mds</label>
+            <input type="range" id="social-slider" min="2" max="40" value="12" oninput="updateSliders()">
         </div>
         <div class="slider-group">
-            <label><span>Santé & Social</span><span id="val-health">10</span></label>
-            <input type="range" id="health-slider" min="1" max="35" value="10" oninput="updateSliders()">
-        </div>
-        <div class="slider-group">
-            <label><span>Défense Armée</span><span id="val-army">5</span></label>
-            <input type="range" id="army-slider" min="1" max="30" value="5" oninput="updateSliders()">
+            <label><span>Sécurité Intérieure & Police</span><span id="val-police">6</span> Mds</label>
+            <input type="range" id="police-slider" min="2" max="25" value="6" oninput="updateSliders()">
         </div>
 
-        <h2>Marché Mondial & Ressources</h2>
-        <button class="market-btn" onclick="tradeResource('oil')">🛢️ Vendre/Acheter du Pétrole (+/- 3 Mds€)</button>
-        <button class="market-btn" onclick="tradeResource('mining')">⛏️ Exploiter les Minerais Stratégiques</button>
+        <h2>Décrets & Lois en Cours</h2>
+        <button class="policy-btn" id="btn-pension" onclick="togglePolicy('pension')">📜 Réforme des Retraites (- Pop, + Éco)</button>
+        <button class="policy-btn" id="btn-green" onclick="togglePolicy('green')">🌱 Transition Écologique Subventionnée</button>
 
-        <button class="action-btn" onclick="nextTurn()">PASSER AU MOIS SUIVANT ➔</button>
+        <button class="action-btn" onclick="nextTurn()">VALIDER LE MOIS POLITIQUE ➔</button>
     </sidebar>
 
     <div class="main-panel">
         <div class="dashboard-grid">
             <div class="card">
-                <h3>Bilan Financier Mensuel</h3>
+                <h3>Bilan Budgétaire du Mois</h3>
                 <div class="stat-line"><span>Recettes Fiscales :</span> <strong id="rep-income" style="color:var(--success);">+0 Mds</strong></div>
                 <div class="stat-line"><span>Dépenses Publiques :</span> <strong id="rep-expenses" style="color:var(--danger);">-0 Mds</strong></div>
                 <div class="stat-line" style="border-top:1px solid var(--border); padding-top:4px; margin-top:4px;">
-                    <span>Solde Net :</span> <strong id="rep-net">0 Mds</strong>
+                    <span>Solde Budgétaire :</span> <strong id="rep-net">0 Mds</strong>
                 </div>
             </div>
             <div class="card">
-                <h3>Statut Géopolitique</h3>
-                <div class="stat-line"><span>Dirigeant / Régime :</span> <strong id="rep-regime">-</strong></div>
-                <div class="stat-line"><span>Niveau Technologique :</span> <strong id="rep-tech">1.0x</strong></div>
-                <div class="stat-line"><span>Pétrole en stock :</span> <strong id="rep-oil">10 barils</strong></div>
+                <h3>Climat Social & Syndicats</h3>
+                <div class="stat-line"><span>Colère Sociale (Grèves) :</span> <strong id="rep-strike" style="color:var(--success);">Faible</strong></div>
+                <div class="stat-line"><span>Soutien du Parlement :</span> <strong id="rep-parliament">Majorité Absolue</strong></div>
+                <div class="stat-line"><span>PIB National :</span> <strong id="rep-gdp">2500 Mds €</strong></div>
             </div>
         </div>
 
         <div class="card">
-            <h3>Actualités & Rapports de Veille Stratégique</h3>
+            <h3>Dépêches & Dilemmes Politiques</h3>
             <div class="news-box" id="news-text">
-                Bienvenue au pouvoir. Analysez votre nation et prenez vos premières décisions budgétaires.
+                Bienvenue au palais présidentiel. Votre gouvernement prend en charge la gestion du pays. Surveillez l'opinion publique de près.
             </div>
         </div>
     </div>
 </div>
 
-<!-- Scripts Leaflet (Carte OpenStreetMap gratuite) -->
+<!-- Scripts Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     let months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
     
-    // Initialisation de la carte OpenStreetMap
-    let map = L.map('map-picker').setView([46.603354, 1.888334], 3); // Centré sur l'Europe par défaut
+    let map = L.map('map-picker').setView([46.603354, 1.888334], 3);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '© OpenStreetMap'
@@ -192,9 +186,8 @@
 
     let chosenCountryName = "France";
     let estimatedGDP = 2500;
-    let estimatedTreasury = 15;
+    let estimatedTreasury = 18;
 
-    // Écouteur de clic sur la carte pour géolocaliser et choisir le pays
     map.on('click', async function(e) {
         let lat = e.latlng.lat;
         let lon = e.latlng.lng;
@@ -202,17 +195,15 @@
             let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
             let data = await response.json();
             if(data && data.address) {
-                chosenCountryName = data.address.country || data.address.state || "Territoire Inconnu";
+                chosenCountryName = data.address.country || data.address.state || "État Souverain";
                 document.getElementById('selected-country-name').value = chosenCountryName;
-                
-                // Génération procédurale réaliste des stats selon la taille/pays
-                estimatedGDP = Math.floor(Math.random() * 4000) + 300;
-                estimatedTreasury = Math.floor(estimatedGDP * 0.01);
+                estimatedGDP = Math.floor(Math.random() * 4500) + 400;
+                estimatedTreasury = Math.floor(estimatedGDP * 0.012);
                 document.getElementById('setup-gdp').innerText = `${estimatedGDP} Mds €`;
                 document.getElementById('setup-treasury').innerText = `${estimatedTreasury} Mds €`;
             }
         } catch(err) {
-            console.log("Erreur de géocodage OpenStreetMap");
+            console.log("Erreur de géocodage");
         }
     });
 
@@ -221,17 +212,15 @@
         regime: "democratie",
         monthIndex: 0,
         year: 2026,
-        treasury: 15.0,
+        treasury: 18.0,
         gdp: 2500.0,
-        popularity: 65,
-        stability: 80,
-        mandateMonthsLeft: 60, // 5 ans de mandat
-        techLevel: 1.0,
-        oilReserves: 10,
+        popularity: 60,
+        authority: 75,
+        mandateMonthsLeft: 60,
         tax: 25,
-        edu: 6,
-        health: 10,
-        army: 5
+        socialBudget: 12,
+        policeBudget: 6,
+        policies: { pension: false, green: false }
     };
 
     function initGame() {
@@ -241,8 +230,6 @@
         gameData.regime = document.getElementById('regime-type').value;
 
         document.getElementById('header-nation').innerText = gameData.nation.toUpperCase();
-        document.getElementById('rep-regime').innerText = gameData.regime.toUpperCase();
-        
         if(gameData.regime !== 'democratie') {
             document.getElementById('mandate-box').style.display = 'none';
         }
@@ -254,45 +241,46 @@
 
     function updateSliders() {
         gameData.tax = parseInt(document.getElementById('tax-slider').value);
-        gameData.edu = parseInt(document.getElementById('edu-slider').value);
-        gameData.health = parseInt(document.getElementById('health-slider').value);
-        gameData.army = parseInt(document.getElementById('army-slider').value);
+        gameData.socialBudget = parseInt(document.getElementById('social-slider').value);
+        gameData.policeBudget = parseInt(document.getElementById('police-slider').value);
 
         document.getElementById('val-tax').innerText = gameData.tax;
-        document.getElementById('val-edu').innerText = gameData.edu;
-        document.getElementById('val-health').innerText = gameData.health;
-        document.getElementById('val-army').innerText = gameData.army;
+        document.getElementById('val-social').innerText = gameData.socialBudget;
+        document.getElementById('val-police').innerText = gameData.policeBudget;
     }
 
-    function tradeResource(type) {
-        if(type === 'oil') {
-            gameData.treasury += 4.5;
-            gameData.oilReserves -= 2;
-            document.getElementById('news-text').innerText = "🛢️ Vente de barils de pétrole sur le marché international : +4.5 Mds € dans les caisses.";
+    function togglePolicy(type) {
+        gameData.policies[type] = !gameData.policies[type];
+        let btn = document.getElementById(`btn-${type}`);
+        if(gameData.policies[type]) {
+            btn.style.borderColor = 'var(--success)';
+            gameData.popularity -= 8; // Contrecoup politique immédiat
         } else {
-            gameData.treasury -= 2.0;
-            gameData.gdp += 15;
-            document.getElementById('news-text').innerText = "⛏️ Importation de minerais pour l'industrie : le PIB à long terme progresse.";
+            btn.style.borderColor = 'var(--accent)';
         }
         updateUI();
     }
 
     function nextTurn() {
         let monthlyIncome = (gameData.gdp * (gameData.tax / 100)) / 12;
-        let monthlyExpenses = gameData.edu + gameData.health + gameData.army;
+        let monthlyExpenses = gameData.socialBudget + gameData.policeBudget;
+        if(gameData.policies.pension) monthlyExpenses -= 2;
+        if(gameData.policies.green) monthlyExpenses += 3;
+
         let net = monthlyIncome - monthlyExpenses;
-
         gameData.treasury += net;
-        gameData.gdp += (gameData.edu * 0.2) - (gameData.tax * 0.03);
 
-        // Gestion popularité
-        if(gameData.tax > 38) gameData.popularity -= 3;
-        else if(gameData.tax < 18) gameData.popularity += 1;
+        // Évolution de la popularité selon la politique sociale et fiscale
+        if(gameData.tax > 40) gameData.popularity -= 4;
+        if(gameData.socialBudget < 8) gameData.popularity -= 3;
+        else if(gameData.socialBudget >= 15) gameData.popularity += 2;
+
+        if(gameData.policies.pension) gameData.popularity -= 2;
 
         gameData.popularity = Math.max(0, Math.min(100, gameData.popularity));
-        gameData.stability = gameData.regime === 'democratie' ? gameData.popularity : 85;
+        gameData.authority = Math.max(0, Math.min(100, gameData.authority + (gameData.policeBudget > 10 ? 1 : -1)));
 
-        // Gestion du temps et des mandats (Élections)
+        // Gestion du temps et des élections
         gameData.monthIndex++;
         if(gameData.regime === 'democratie') {
             gameData.mandateMonthsLeft--;
@@ -306,27 +294,40 @@
             gameData.year++;
         }
 
-        // Affichage du rapport financier
+        // Affichage des résultats financiers
         document.getElementById('rep-income').innerText = `+${monthlyIncome.toFixed(1)} Mds`;
         document.getElementById('rep-expenses').innerText = `-${monthlyExpenses.toFixed(1)} Mds`;
         let netEl = document.getElementById('rep-net');
         netEl.innerText = `${net >= 0 ? '+' : ''}${net.toFixed(1)} Mds`;
         netEl.style.color = net >= 0 ? 'var(--success)' : 'var(--danger)';
+        document.getElementById('rep-gdp').innerText = `${Math.round(gameData.gdp)} Mds €`;
 
+        triggerPoliticalEvent();
         updateUI();
 
-        if(gameData.treasury < -50) {
-            alert("Faillite nationale ! Votre pays est mis sous tutelle du FMI.");
+        if(gameData.treasury < -40) {
+            alert("Faillite de l'État ! Le pays ne peut plus honorer sa dette souveraine. Vous êtes destitué par le Parlement.");
             location.reload();
         }
     }
 
+    function triggerPoliticalEvent() {
+        let events = [
+            "Grève générale dans les transports : la contestation sociale s'intensifie face aux choix budgétaires.",
+            "Scandale politico-financier : un proche conseiller est soupçonné de favoritisme.",
+            "Le Parlement menace de censurer le gouvernement si les dépenses sociales ne sont pas revues.",
+            "Sondage favorable : une partie de la classe moyenne salue la rigueur de votre gestion."
+        ];
+        let chosen = events[Math.floor(Math.random() * events.length)];
+        document.getElementById('news-text').innerText = `📢 Flash Info (${months[gameData.monthIndex]} ${gameData.year}) : ${chosen}`;
+    }
+
     function triggerElection() {
         if(gameData.popularity >= 50) {
-            alert(`🗳️ ÉLECTIONS LÉGISLATIVES / PRÉSIDENTIELLES !\n\nGrâce à votre popularité de ${gameData.popularity}%, vous avez été réélu pour un nouveau mandat de 5 ans !`);
+            alert(`🗳️ ÉLECTIONS PRÉSIDENTIELLES !\n\nVictoire ! Avec ${gameData.popularity}% d'opinions favorables, vous remportez un nouveau mandat de 5 ans.`);
             gameData.mandateMonthsLeft = 60;
         } else {
-            alert(`🗳️ DÉFAITE AUX ÉLECTIONS !\n\nAvec seulement ${gameData.popularity}% de popularité, les électeurs vous ont lourdement sanctionné. Vous êtes destitué.`);
+            alert(`🗳️ DÉFAITE ÉLECTORALE SÉVÈRE !\n\nRejeté par les urnes avec seulement ${gameData.popularity}% de popularité, vous quittez l'Elysée / le pouvoir dans la contestation.`);
             location.reload();
         }
     }
@@ -334,10 +335,14 @@
     function updateUI() {
         document.getElementById('kpi-date').innerText = `${months[gameData.monthIndex]} ${gameData.year}`;
         document.getElementById('kpi-treasury').innerText = `${gameData.treasury.toFixed(1)} Mds`;
-        document.getElementById('kpi-gdp').innerText = `${Math.round(gameData.gdp)} Mds`;
         document.getElementById('kpi-pop').innerText = `${gameData.popularity} %`;
-        document.getElementById('kpi-stability').innerText = `${gameData.stability} %`;
-        document.getElementById('rep-oil').innerText = `${gameData.oilReserves} barils`;
+        document.getElementById('kpi-auth').innerText = `${gameData.authority} %`;
+        
+        let strikeEl = document.getElementById('rep-strike');
+        if(gameData.popularity < 35) { strikeEl.innerText = "Critique (Grèves massives)"; strikeEl.style.color = "var(--danger)"; }
+        else if(gameData.popularity < 50) { strikeEl.innerText = "Tendue"; strikeEl.style.color = "var(--warning)"; }
+        else { strikeEl.innerText = "Paisible"; strikeEl.style.color = "var(--success)"; }
+
         if(gameData.regime === 'democratie') {
             document.getElementById('kpi-mandate').innerText = `${Math.floor(gameData.mandateMonthsLeft / 12)}a ${gameData.mandateMonthsLeft % 12}m`;
         }
