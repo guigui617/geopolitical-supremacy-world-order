@@ -20,16 +20,32 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; }
 
-        /* ÉCRAN DE SETUP */
+        /* ÉCRAN DE SETUP & CARTE DU MONDE */
         #setup-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(9, 13, 22, 0.95); display: flex; justify-content: center; align-items: center; z-index: 9999;
+            background: rgba(9, 13, 22, 0.96); display: flex; justify-content: center; align-items: center; z-index: 9999;
+            overflow-y: auto; padding: 20px;
         }
         .setup-card {
             background: var(--bg-panel); border: 1px solid var(--border); padding: 30px;
-            border-radius: 12px; width: 450px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border-radius: 12px; width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
-        .setup-card h1 { color: var(--accent); margin-bottom: 20px; font-size: 1.3rem; text-align: center; }
+        .setup-card h1 { color: var(--accent); margin-bottom: 15px; font-size: 1.5rem; text-align: center; }
+        .setup-card p { color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 20px; }
+        
+        .map-selector {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;
+        }
+        .country-opt {
+            background: var(--bg-dark); border: 1px solid var(--border); padding: 12px; border-radius: 8px;
+            cursor: pointer; text-align: center; transition: all 0.2s;
+        }
+        .country-opt:hover, .country-opt.selected {
+            border-color: var(--accent); background: rgba(59, 130, 246, 0.1);
+        }
+        .country-opt h4 { font-size: 0.9rem; margin-bottom: 4px; }
+        .country-opt span { font-size: 0.75rem; color: var(--text-muted); }
+
         .control-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
         input, select, button { width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-main); border-radius: 6px; font-size: 0.9rem; }
@@ -62,28 +78,56 @@
         input[type="range"] { width: 100%; margin-top: 5px; accent-color: var(--accent); cursor: pointer; }
 
         .action-btn { background: var(--success); margin-top: 10px; }
+        .policy-btn { background: #334155; margin-top: 6px; font-size: 0.8rem; padding: 8px; }
+        .policy-btn.active { background: var(--accent); }
+
         .news-box { background: rgba(15, 23, 42, 0.7); border-left: 4px solid var(--warning); padding: 12px; border-radius: 4px; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
-<!-- ÉCRAN DE CONFIGURATION INITIALE -->
+<!-- ÉCRAN DE SETUP & CARTE DU MONDE -->
 <div id="setup-overlay">
     <div class="setup-card">
         <h1>SUPRÉMATIE GÉOPOLITIQUE</h1>
-        <div class="control-group">
-            <label>Nom de la Nation</label>
-            <input type="text" id="nation-name" value="République Française">
+        <p>Sélectionnez votre nation sur la carte mondiale et choisissez votre régime pour prendre le pouvoir.</p>
+        
+        <div class="map-selector">
+            <div class="country-opt selected" onclick="selectCountry('France', 2500, 15, 65)">
+                <h4>🇫🇷 France</h4>
+                <span>Équilibré • PIB 2.5T€</span>
+            </div>
+            <div class="country-opt" onclick="selectCountry('États-Unis', 21000, 45, 75)">
+                <h4>🇺🇸 États-Unis</h4>
+                <span>Superpuissance • PIB 21T€</span>
+            </div>
+            <div class="country-opt" onclick="selectCountry('Chine', 14000, 35, 80)">
+                <h4>🇨🇳 Chine</h4>
+                <span>Industriel • PIB 14T€</span>
+            </div>
+            <div class="country-opt" onclick="selectCountry('Allemagne', 3800, 20, 70)">
+                <h4>🇩🇪 Allemagne</h4>
+                <span>Économique • PIB 3.8T€</span>
+            </div>
+            <div class="country-opt" onclick="selectCountry('Royaume-Uni', 2700, 18, 60)">
+                <h4>🇬🇧 Royaume-Uni</h4>
+                <span>Financier • PIB 2.7T€</span>
+            </div>
+            <div class="country-opt" onclick="selectCountry('Brésil', 1800, 12, 55)">
+                <h4>🇧🇷 Brésil</h4>
+                <span>Émergent • PIB 1.8T€</span>
+            </div>
         </div>
+
         <div class="control-group">
-            <label>Régime Politique</label>
+            <label>Régime Politique du Dirigeant</label>
             <select id="regime-type">
-                <option value="democratie">Démocratie / République (Sensible à la popularité)</option>
-                <option value="monarchie">Monarchie (Équilibre tradition / élites)</option>
-                <option value="dictature">Dictature / Autocratie (Stabilité par la force)</option>
+                <option value="democratie">Président (République Démocratique)</option>
+                <option value="monarchie">Roi / Monarque (Tradition & Stabilité)</option>
+                <option value="dictature">Chancelier / Dictateur (Pouvoir autoritaire)</option>
             </select>
         </div>
-        <button onclick="initGame()">PRENDRE LE POUVOIR</button>
+        <button onclick="initGame()">LANCER LE MANDAT MONDIAL</button>
     </div>
 </div>
 
@@ -98,7 +142,7 @@
             </div>
             <div class="kpi-card">
                 <span class="kpi-label">Trésorerie</span>
-                <span class="kpi-value" id="kpi-treasury" style="color: var(--success);">10.0 Mds €</span>
+                <span class="kpi-value" id="kpi-treasury" style="color: var(--success);">15.0 Mds €</span>
             </div>
             <div class="kpi-card">
                 <span class="kpi-label">PIB Annuel</span>
@@ -124,17 +168,21 @@
 
         <h2>Budgets Sectoriels (Mds € / mois)</h2>
         <div class="slider-group">
-            <label>Éducation & R&D: <span id="val-edu">5</span> Mds</label>
-            <input type="range" id="edu-slider" min="1" max="20" value="5" oninput="updateSliders()">
+            <label>Éducation & R&D: <span id="val-edu">6</span> Mds</label>
+            <input type="range" id="edu-slider" min="1" max="30" value="6" oninput="updateSliders()">
         </div>
         <div class="slider-group">
-            <label>Santé & Social: <span id="val-health">8</span> Mds</label>
-            <input type="range" id="health-slider" min="1" max="25" value="8" oninput="updateSliders()">
+            <label>Santé & Social: <span id="val-health">10</span> Mds</label>
+            <input type="range" id="health-slider" min="1" max="35" value="10" oninput="updateSliders()">
         </div>
         <div class="slider-group">
-            <label>Défense & Armée: <span id="val-army">4</span> Mds</label>
-            <input type="range" id="army-slider" min="1" max="20" value="4" oninput="updateSliders()">
+            <label>Défense & Armée: <span id="val-army">5</span> Mds</label>
+            <input type="range" id="army-slider" min="1" max="30" value="5" oninput="updateSliders()">
         </div>
+
+        <h2>Lois & Réformes Clés</h2>
+        <button id="btn-eco" class="policy-btn" onclick="togglePolicy('green')">🌱 Transition Verte (Coûteux, booste le futur)</button>
+        <button id="btn-tech" class="policy-btn" onclick="togglePolicy('tech')">💻 Plan Numérique National (Boost R&D)</button>
 
         <button class="action-btn" onclick="nextTurn()">VALIDER LE MOIS SUIVANT ➔</button>
     </sidebar>
@@ -150,17 +198,17 @@
                 </div>
             </div>
             <div class="card">
-                <h3>État de la Nation</h3>
+                <h3>Géopolitique & Statut</h3>
                 <div class="stat-line"><span>Régime :</span> <strong id="rep-regime">-</strong></div>
                 <div class="stat-line"><span>Niveau Technologique :</span> <strong id="rep-tech">1.0x</strong></div>
-                <div class="stat-line"><span>Indice de Paix :</span> <strong style="color:var(--success);">Stable</strong></div>
+                <div class="stat-line"><span>Relations ONU :</span> <strong style="color:var(--success);" id="rep-un">Allié Fiable</strong></div>
             </div>
         </div>
 
         <div class="card">
-            <h3>Dernières Actualités & Événements Géopolitiques</h3>
+            <h3>Dernières Actualités Mondiales</h3>
             <div class="news-box" id="news-text">
-                Bienvenue au pouvoir. Analysez les indicateurs macro-économiques et validez votre premier mois de mandat.
+                Bienvenue au sommet de l'État. Sélectionnez vos orientations et validez votre premier mois de mandat.
             </div>
         </div>
     </div>
@@ -168,25 +216,36 @@
 
 <script>
     let months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+    let selectedNation = { name: "France", gdp: 2500, treasury: 15, stability: 65 };
+
     let gameData = {
-        nation: "République Française",
+        nation: "France",
         regime: "democratie",
         monthIndex: 0,
         year: 2026,
-        treasury: 10.0, // en Milliards d'euros
+        treasury: 15.0,
         gdp: 2500.0,
         popularity: 65,
         stability: 80,
         techLevel: 1.0,
         tax: 25,
-        edu: 5,
-        health: 8,
-        army: 4
+        edu: 6,
+        health: 10,
+        army: 5,
+        policies: { green: false, tech: false }
     };
 
+    function selectCountry(name, gdp, treasury, stability) {
+        document.querySelectorAll('.country-opt').forEach(el => el.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+        selectedNation = { name, gdp, treasury, stability };
+    }
+
     function initGame() {
-        let nInput = document.getElementById('nation-name').value;
-        if(nInput) gameData.nation = nInput;
+        gameData.nation = selectedNation.name;
+        gameData.gdp = selectedNation.gdp;
+        gameData.treasury = selectedNation.treasury;
+        gameData.stability = selectedNation.stability;
         gameData.regime = document.getElementById('regime-type').value;
 
         document.getElementById('header-nation').innerText = gameData.nation.toUpperCase();
@@ -209,70 +268,80 @@
         document.getElementById('val-army').innerText = gameData.army;
     }
 
+    function togglePolicy(type) {
+        gameData.policies[type] = !gameData.policies[type];
+        let btn = event.currentTarget;
+        if(gameData.policies[type]) {
+            btn.classList.add('active');
+            gameData.treasury -= 5; // Coût d'adoption de la loi
+        } else {
+            btn.classList.remove('active');
+        }
+        updateUI();
+    }
+
     function nextTurn() {
-        // Calculs économiques mensuels
         let monthlyIncome = (gameData.gdp * (gameData.tax / 100)) / 12;
         let monthlyExpenses = gameData.edu + gameData.health + gameData.army;
+        if(gameData.policies.green) monthlyExpenses += 2;
+        if(gameData.policies.tech) monthlyExpenses += 2;
+
         let net = monthlyIncome - monthlyExpenses;
 
         gameData.treasury += net;
-        gameData.gdp += (gameData.edu * 0.2) + (gameData.techLevel * 2) - (gameData.tax * 0.05);
+        
+        let techMultiplier = gameData.policies.tech ? 1.5 : 1.0;
+        gameData.gdp += ((gameData.edu * 0.25) + (gameData.techLevel * 3) - (gameData.tax * 0.04)) * techMultiplier;
 
-        // Ajustement popularité & stabilité selon le régime
-        if(gameData.tax > 35) gameData.popularity -= 3;
+        // Gestion de la popularité
+        if(gameData.tax > 38) gameData.popularity -= 4;
         else if(gameData.tax < 18) gameData.popularity += 2;
 
-        if(gameData.health < 6) gameData.popularity -= 2;
-        else gameData.health >= 10 ? gameData.popularity += 1 : null;
+        if(gameData.health < 8) gameData.popularity -= 2;
+        else gameData.health >= 15 ? gameData.popularity += 1 : null;
 
         if(gameData.regime === 'dictature') {
-            if(gameData.army < 5) gameData.stability -= 4;
+            if(gameData.army < 8) gameData.stability -= 5;
             else gameData.stability += 1;
         } else {
-            gameData.stability = gameData.popularity; // En démocratie, stabilité = popularité
+            gameData.stability = gameData.popularity;
         }
 
-        // Bornes
         gameData.popularity = Math.max(0, Math.min(100, gameData.popularity));
         gameData.stability = Math.max(0, Math.min(100, gameData.stability));
 
-        // Avancement du temps
         gameData.monthIndex++;
         if(gameData.monthIndex > 11) {
             gameData.monthIndex = 0;
             gameData.year++;
-            gameData.techLevel = parseFloat((gameData.techLevel + 0.05).toFixed(2));
+            gameData.techLevel = parseFloat((gameData.techLevel + 0.08).toFixed(2));
         }
 
-        // Affichage du rapport
         document.getElementById('rep-income').innerText = `+${monthlyIncome.toFixed(1)} Mds €`;
         document.getElementById('rep-expenses').innerText = `-${monthlyExpenses.toFixed(1)} Mds €`;
         let netEl = document.getElementById('rep-net');
         netEl.innerText = `${net >= 0 ? '+' : ''}${net.toFixed(1)} Mds €`;
         netEl.style.color = net >= 0 ? 'var(--success)' : 'var(--danger)';
 
-        // Événement aléatoire
         triggerRandomEvent();
-
         updateUI();
 
-        // Vérification de fin de partie
-        if(gameData.treasury < -50) {
-            alert("Votre pays est en faillite totale ! Le FMI prend le contrôle.");
+        if(gameData.treasury < -60) {
+            alert("Faillite nationale ! Le pays est placé sous tutelle internationale.");
             location.reload();
         }
         if(gameData.stability <= 0) {
-            alert("Coup d'état ! Votre gouvernement a été renversé par la rue.");
+            alert("Révolution majeure ! Votre gouvernement a été renversé.");
             location.reload();
         }
     }
 
     function triggerRandomEvent() {
         let events = [
-            "Hausse mondiale des cours de l'énergie : les marchés réagissent.",
-            "Sommet diplomatique international : vos relations extérieures s'améliorent.",
-            "Grève sectorielle dans les transports suite aux réformes budgétaires.",
-            "Découverte technologique majeure validée par vos instituts de recherche."
+            "Sommet climatique mondial : votre politique environnementale est saluée.",
+            "Crise boursière internationale : volatilité temporaire sur les marchés.",
+            "Demande accrue de technologies nationales suite à un accord commercial.",
+            "Tensions diplomatiques aux frontières : la vigilance militaire est requise."
         ];
         let chosen = events[Math.floor(Math.random() * events.length)];
         document.getElementById('news-text').innerText = `📢 ${months[gameData.monthIndex]} ${gameData.year} : ${chosen}`;
