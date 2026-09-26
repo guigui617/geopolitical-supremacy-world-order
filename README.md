@@ -1,19 +1,3 @@
-export interface NationState {
-  name: string;
-  regime: 'democracy' | 'monarchy' | 'dictatorship';
-  gdp: number;
-  treasury: number;
-  popularity: number;
-  stability: number;
-  budgets: {
-    health: number;
-    education: number;
-    military: number;
-    research: number;
-  };
-}
-
-const htmlContent = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
